@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
+env/
+ENV/
+.venv
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Jupyter Notebook
+.ipynb_checkpoints
+*.ipynb
+
+# Dataset (too large for git)
+data/train/
+data/val/
+data/test/
+*.jpg
+*.jpeg
+*.png
+*.bmp
+*.gif
+
+# Model files (exclude large models, keep best model)
+# models/*.pth  # Commented to allow resnet50_best.pth
+models/*.pt
+models/*.onnx
+*.h5
+
+# Evaluation results (generated files)
+evaluation_results/
+
+# Logs
+logs/
+*.log
+runs/
+tensorboard/
+
+# Validation reports
+data_validation_report.json
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Old/Archive files
+old_files/
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+~*
+
+# Large files
+*.zip
+*.tar.gz
+*.rar
+*.7z
