@@ -30,8 +30,8 @@ class EWasteClassifier:
         self.device = torch.device(device if device else ('cuda' if torch.cuda.is_available() else 'cpu'))
         self.model_path = Path(model_path)
         
-        # Load checkpoint
-        checkpoint = torch.load(self.model_path, map_location=self.device)
+        # Load checkpoint (always load to CPU to avoid GPU device mismatches)
+        checkpoint = torch.load(self.model_path, map_location=torch.device('cpu'))
         
         # Get config
         config = checkpoint.get('config', {})
@@ -47,6 +47,7 @@ class EWasteClassifier:
         # Create model
         self.model = create_model(
             model_name=self.model_name,
+
             num_classes=self.num_classes,
             pretrained=False
         ).to(self.device)

@@ -2,6 +2,12 @@ import streamlit as st
 import sys
 from pathlib import Path
 from PIL import Image
+import os
+
+# determine absolute path to model so uploads work correctly from anywhere
+BASE_DIR = Path(__file__).parent.parent
+MODEL_PATH = BASE_DIR / "models" / "resnet50_best.pth"
+print("Model Path:", MODEL_PATH)
 
 parent_dir = Path(__file__).parent.parent
 sys.path.append(str(parent_dir))
@@ -14,7 +20,7 @@ st.title("📸 Single Image Classification")
 
 @st.cache_resource
 def load_classifier():
-    return EWasteClassifier(str(Path(__file__).parent.parent / "models" / "resnet50_best.pth"))
+    return EWasteClassifier(str(MODEL_PATH))
 
 try:
     classifier = load_classifier()

@@ -4,6 +4,33 @@ Main Streamlit application for e-waste classification
 """
 import streamlit as st
 from pathlib import Path
+import os
+
+# determine the path to the trained model file so that the app works
+# regardless of the current working directory. this mirrors the snippet
+# the user provided in the conversation.
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+MODEL_FILENAME = "resnet50_best.pth"
+MODEL_PATH = os.path.join(BASE_DIR, "models", MODEL_FILENAME)
+print("Model Path:", MODEL_PATH)
+
+# helper for lazy loading the classifier (memoized by streamlit)
+@st.cache_resource
+# note: import happens inside the function to keep startup lightweight
+
+def load_classifier():
+    from utils.inference import EWasteClassifier
+    return EWasteClassifier(MODEL_PATH)
+
+# attempt to load once so we can reuse the object for stats on the home page
+try:
+    classifier = load_classifier()
+    model_loaded_successfully = True
+except Exception as __e:
+    # keep the error around so we can show it on the page if necessary
+    classifier = None
+    model_error = __e
+    model_loaded_successfully = False
 
 # Page config
 st.set_page_config(
@@ -79,38 +106,39 @@ st.markdown("---")
 # Model Statistics
 st.markdown("## 📊 Model Performance")
 
+# compute values based on model load outcome
+if model_loaded_successfully and classifier is not None:
+    accuracy_str = "100%"  # could be updated with real metrics later
+    num_categories = len(classifier.class_names)
+    arch = classifier.model_name
+    st.write(f"Loaded model from: `{MODEL_PATH}`")
+else:
+    accuracy_str = "N/A"
+    num_categories = "N/A"
+    arch = "Unknown"
+    if not model_loaded_successfully:
+        st.error(f"Failed to load model: {model_error}")
+
 col1, col2, col3, col4 = st.columns(4)
 
 with col1:
-    st.markdown("""
-    <div class="stat-box">
-        <div class="stat-value">100%</div>
-        <div class="stat-label">Validation Accuracy</div>
-    </div>
+    st.markdown(f"""
+    <div class=\"stat-box\">\n        <div class=\"stat-value\">{accuracy_str}</div>\n        <div class=\"stat-label\">Validation Accuracy</div>\n    </div>
     """, unsafe_allow_html=True)
 
 with col2:
-    st.markdown("""
-    <div class="stat-box">
-        <div class="stat-value">8</div>
-        <div class="stat-label">Categories</div>
-    </div>
+    st.markdown(f"""
+    <div class=\"stat-box\">\n        <div class=\"stat-value\">{num_categories}</div>\n        <div class=\"stat-label\">Categories</div>\n    </div>
     """, unsafe_allow_html=True)
 
 with col3:
     st.markdown("""
-    <div class="stat-box">
-        <div class="stat-value">&lt;50ms</div>
-        <div class="stat-label">Inference Time</div>
-    </div>
+    <div class=\"stat-box\">\n        <div class=\"stat-value\">&lt;50ms</div>\n        <div class=\"stat-label\">Inference Time</div>\n    </div>
     """, unsafe_allow_html=True)
 
 with col4:
-    st.markdown("""
-    <div class="stat-box">
-        <div class="stat-value">ResNet50</div>
-        <div class="stat-label">Model Architecture</div>
-    </div>
+    st.markdown(f"""
+    <div class=\"stat-box\">\n        <div class=\"stat-value\">{arch}</div>\n        <div class=\"stat-label\">Model Architecture</div>\n    </div>
     """, unsafe_allow_html=True)
 
 st.markdown("---")
