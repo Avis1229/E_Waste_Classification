@@ -48,10 +48,6 @@ data/test/
 *.gif
 
 # Model files (exclude large models, keep best model)
-# models/*.pth  # Commented to allow resnet50_best.pth
-models/*.pt
-models/*.onnx
-*.h5
 
 # Evaluation results (generated files)
 evaluation_results/
