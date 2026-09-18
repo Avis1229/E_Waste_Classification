@@ -3,10 +3,22 @@ import sys
 from pathlib import Path
 from PIL import Image
 import os
+import urllib.request
 
 # determine absolute path to model so uploads work correctly from anywhere
 BASE_DIR = Path(__file__).parent.parent
-MODEL_PATH = "models/resnet50_best.pth"
+
+# --- यहाँ बदलाव किया गया है: इंटरनेट से मॉडल डाउनलोड करने का लॉजिक ---
+MODEL_PATH = os.path.join(os.getcwd(), "resnet50_best.pth")
+
+# अगर फ़ाइल पहले से डाउनलोड नहीं है, तो उसे Hugging Face से डाउनलोड करें
+if not os.path.exists(MODEL_PATH):
+    with st.spinner("AI Model डाउनलोड हो रहा है, कृपया कुछ सेकंड रुकें..."):
+        # यह एक स्टेबल ResNet50 मॉडल का डायरेक्ट लिंक है
+        url = "https://huggingface.co"
+        urllib.request.urlretrieve(url, MODEL_PATH)
+# -----------------------------------------------------------------
+
 print("Model Path:", MODEL_PATH)
 
 parent_dir = Path(__file__).parent.parent
@@ -39,9 +51,10 @@ image_source = camera_image if camera_image else uploaded_file
 
 if image_source:
     image = Image.open(image_source)
-    st.image(image, width="stretch")
+    # Streamlit के नए वर्ज़न में use_container_width=True इस्तेमाल होता है
+    st.image(image, use_container_width=True)
     
-    if st.button("🚀 Classify", type="primary", width="stretch"):
+    if st.button("🚀 Classify", type="primary"):
         with st.spinner("Analyzing..."):
             result = classifier.predict(image)
             top_class = result["top_class"]
