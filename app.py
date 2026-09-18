@@ -11,7 +11,7 @@ import os
 # the user provided in the conversation.
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_FILENAME = "resnet50_best.pth"
-MODEL_PATH = os.path.join(BASE_DIR, "models", MODEL_FILENAME)
+MODEL_PATH = "models/resnet50_best.pth"
 print("Model Path:", MODEL_PATH)
 
 # helper for lazy loading the classifier (memoized by streamlit)
