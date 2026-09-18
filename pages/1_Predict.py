@@ -6,7 +6,7 @@ import os
 
 # determine absolute path to model so uploads work correctly from anywhere
 BASE_DIR = Path(__file__).parent.parent
-MODEL_PATH = BASE_DIR / "models" / "resnet50_best.pth"
+MODEL_PATH = "models/resnet50_best.pth"
 print("Model Path:", MODEL_PATH)
 
 parent_dir = Path(__file__).parent.parent
